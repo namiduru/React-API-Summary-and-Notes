@@ -48,8 +48,6 @@
 
 ### <b><i style="color: rgb(52,73,94);">useState</i></b>
 
-</br>
-
 **Regular Declaration**
 
 ```js
@@ -79,8 +77,6 @@ You may consider to useMemo, if you have expensive calculations while rendering.
 
 ### <b><i style="color: rgb(52,73,94);">useEffect</i></b>
 
-</br>
-
 **Regular Declaration**
 
 - Run after render
@@ -108,3 +104,37 @@ useEffect(() => {
 </br>
 
 ### <b><i style="color: rgb(52,73,94);">useContext</i></b>
+
+- When nearest provider updates, this hook will trigger a renderer even if React.memo or shouldComponentUpdate exists.
+- Will always re-render when context value changes.
+
+```js
+const DarkContext = createContext("defaultValue");
+
+// New Way
+const ChildAppWithHook = () => {
+  const context = useContext(DarkContext);
+
+  return <div>{context}</div>;
+};
+
+// Old Way
+const ChildComponentWithoutHook = () => {
+  return <DarkContext.Consumer>{(value) => value}</DarkContext.Consumer>;
+};
+
+ReactDOM.render(
+  <>
+    <DarkContext.Provider value={"someValue"}>
+      <ChildAppWithHook />
+      <ChildComponentWithoutHook />
+      <App />
+    </DarkContext.Provider>
+  </>,
+  rootElement
+);
+```
+
+</br>
+
+### <b><i style="color: rgb(52,73,94);">useReducer</i></b>
