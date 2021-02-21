@@ -138,3 +138,138 @@ ReactDOM.render(
 </br>
 
 ### <b><i style="color: rgb(52,73,94);">useReducer</i></b>
+
+- useState alternative accepts reducer, state or optionaly state initialization function.
+  - Returns state ready only value and dispatch function.
+- If same value has returned from Reducer Hook, re-rendering will not happening by this prop.
+
+**Regular Declaration**
+
+```js
+const lifeStatus = { life: "good" };
+
+function lifeReducer(state, action) {
+  switch (action.type) {
+    case "corona-virus":
+      return {
+        life: "bad",
+      };
+    case "well-paid-new-job":
+      return {
+        life: "amazing",
+      };
+    default:
+      throw new Error();
+  }
+}
+
+function lazyLoading(lifeStatus) {
+  return { life: lifeStatus };
+}
+
+export default function App() {
+  // You could make lazy initialization by passsing third argument as a function and this funciton will take the useReducer's state argument which is lifeStatus in here
+  // const [state, dispatch] = useReducer(lifeReducer, lifeStatus, lazyLoading);
+
+  const [state, dispatch] = useReducer(lifeReducer, lifeStatus);
+
+  return (
+    <div>
+      <h1>My life status</h1>
+
+      <button onClick={() => dispatch({ type: "corona-virus" })}>
+        Corona Virus
+      </button>
+      <br></br>
+      <button onClick={() => dispatch({ type: "well-paid-new-job" })}>
+        Well Paid New Job
+      </button>
+
+      <br></br>
+      <br></br>
+
+      {state.life}
+    </div>
+  );
+}
+```
+
+</br>
+
+### <b><i style="color: rgb(52,73,94);">useCallback and useMemo</i></b>
+
+- Useful for optimizing generated values from functions to prevent calling functions everytime on rendering phase. (useMemo)
+- Useful for childeren component optimization for preventing re-rendering on prop changes. (useCallback)
+- Do not use for side effects
+  - Because it runs while rendering so it does not have a semantic guarantee.
+
+**useCallback**
+
+- Returns Function
+
+```js
+const callBack = useCallback(() => {
+  generateName(name);
+}, [name]);
+```
+
+**useCallback**
+
+- Returns Value
+
+```js
+const value = useMemo(() => generateName(name), [name]);
+```
+
+</br>
+
+### <b><i style="color: rgb(52,73,94);">useRef</i></b>
+
+- Access a child imperatively
+- Accessing child DOM from parent component actions.
+
+```js
+const refName = useRef(null);
+const focusMyName = () => {
+  refName.current.focus();
+};
+return (
+  <>
+    <input ref={refName} type="text" />
+    <button onClick={focusMyName}>Focus My Name</button>
+  </>
+);
+```
+
+</br>
+
+### <b><i style="color: rgb(52,73,94);">useImperativeHandle</i></b>
+
+- New way of using forwardRef
+
+```js
+function FancyInput(props, ref) {
+  const inputRef = useRef();
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current.focus();
+    }
+  }));
+  return <input ref={inputRef} ... />; // This input
+}
+FancyInput = forwardRef(FancyInput);
+// So by this implementation any component renders FancyInput could access FancyInput's input focus by referenceOfTheFancyInputInsidePArent.current.focus()
+```
+
+</br>
+
+### <b><i style="color: rgb(52,73,94);">useDebugValue</i></b>
+
+- Useful while debugging custom Hooks
+- Sometimes you need to format your code before displaying in such cases you may pass function to formating occur only while inspectecting to prevent performance issues.
+
+```js
+useDebugValue("Hello this is debugging");
+
+useDebugValue((json) => JSON.parse(json));
+```
